@@ -1,6 +1,7 @@
 const express = require('express');
 
 const contactsService = require("../../models/contacts");
+const { HttpErr } = require('../../helpers/HttpErr');
 
 const router = express.Router();
 
@@ -9,9 +10,10 @@ router.get('/', async (req, res, next) => {
     const result = await contactsService.listContacts();
     res.json(result);
   } catch (error) {
-    res.status(500).json({
-      message: 'Server error'
-    })
+    // res.status(500).json({
+    //   message: 'Server error'
+    // })
+    next(error);
   }
 })
 
@@ -24,17 +26,19 @@ router.get('/:contactId', async (req, res, next) => {
       // return res.status(404).json({
       //   message: `Contact with ${contactId} is not found`,
       // });
-      const error = new Error(`Contact with ${contactId} is not found`);
-      error.status = 404;
-      throw error;
+      // const error = new Error(`Contact with ${contactId} is not found`);
+      // error.status = 404;
+      // throw error;
+      throw HttpErr(404, `Contact with ${contactId} is not found`);
     }
     res.json(result);
   } catch (error) {
-    const { status = 500, message = "Server error" } = error;
-    res.status(status).json({
-      message,
-    });
-      }
+    // const { status = 500, message = "Server error" } = error;
+    // res.status(status).json({
+    //   message,
+    // });
+    next(error);
+    }
   
 })
 
