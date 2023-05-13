@@ -1,5 +1,5 @@
 const contactsService = require("../models/contacts");
-const { HttpErr } = require("../helpers/HttpErr");
+const { HttpErr } = require("../helpers");
 const { tryCatchWrapper } = require('../decorators');
 
 
@@ -35,10 +35,10 @@ const removeContact = async (req, res) => {
   if (!result) {
     throw HttpErr(404, `Contact with ${contactId} is not found`);
   }
-  res.json({ message: "Delete success" });
+  res.json({ message: "Contact deleted" });
 };
 
-const updateContact = async (req, res) => {
+const updateContact = async (req, res) => {{}
   const { contactId } = req.params;
   const result = await contactsService.updateContact(contactId, req.body);
   if (!result) {
