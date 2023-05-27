@@ -12,5 +12,11 @@ router.post(
   userController.register
 );
 
+router.post(
+  "/login",
+  validateBody(userSchemas.loginSchema),
+  userController.login
+);
+
 
 module.exports = router;
