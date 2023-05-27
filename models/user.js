@@ -39,7 +39,7 @@ const loginSchema = Joi.object({
   email: Joi.string().required(),
 });
 
-const schemas = {
+const userSchemas = {
   registerSchema,
   loginSchema,
 };
@@ -47,5 +47,5 @@ const schemas = {
 
 module.exports = {
   User,
-  schemas,
+  userSchemas,
 };
