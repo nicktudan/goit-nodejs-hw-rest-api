@@ -17,10 +17,14 @@ const register = async (req, res) => {
 
   const hashPassword = await bcrypt.hash(password, 10);
 
-  const newUser = await User.create({ ...req.body, password: hashPassword });
+  const newUser = await User.create({
+    ...req.body,
+    password: hashPassword,
+  });
 
   res.status(201).json({
     email: newUser.email,
+    subscription: newUser.subscription,
   });
 }
 
@@ -43,13 +47,32 @@ const login = async (req, res) => {
   }
 
   const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
+  await User.findByIdAndUpdate(user._id, { token });
 
     res.json({
       token,
     });
 }
 
+const getCurrent = async (req, res) => {
+  const { email, subscription } = req.user;
+
+  res.json({
+    email,
+    subscription,
+  });
+}
+
+const logout = async (req, res) => {
+  const { _id } = req.user;
+  await User.findByIdAndUpdate(_id, { token: "" });
+
+  res.json({message: "Logout success"});
+}
+
 module.exports = {
   register: tryCatchWrapper(register),
   login: tryCatchWrapper(login),
+  getCurrent: tryCatchWrapper(getCurrent),
+  logout: tryCatchWrapper(logout),
 };

@@ -2,7 +2,7 @@ const express = require("express");
 
 const { userController } = require('../../controllers');
 const { userSchemas } = require("../../models");
-const {validateBody} = require("../../decorators");
+const { validateBody, authenticate } = require("../../decorators");
 
 const router = express.Router();
 
@@ -17,6 +17,10 @@ router.post(
   validateBody(userSchemas.loginSchema),
   userController.login
 );
+
+router.get("/current", authenticate, userController.getCurrent);
+
+router.post("/logout", authenticate, userController.logout);
 
 
 module.exports = router;

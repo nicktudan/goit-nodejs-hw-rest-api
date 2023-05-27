@@ -7,11 +7,10 @@ const listContacts = async (req, res) => {
   // console.log(req.query);
   const { page = 1, limit = 20 } = req.query;
   const skip = (page - 1) * limit;
-  const result = await Contact.find({ owner }, "-createAt -updateAt", {skip, limit})
-    .populate(
-    "owner",
-    "email"
-  );
+  const result = await Contact.find({ owner }, "-createAt -updateAt", {
+    skip,
+    limit,
+  }).populate("owner", "email subscription");
   res.json(result);
 };
 
