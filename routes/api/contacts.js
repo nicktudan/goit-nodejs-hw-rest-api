@@ -6,7 +6,7 @@ const { validateBody, isValidId, authenticate } = require("../../decorators");
 
 const router = express.Router();
 
-// We can use this middleware when it needs to be added to each request 
+// ALTERNATIVE - We can use this middleware when it needs to be added to each request 
 // router.use(authenticate);
 
 router.get("/", authenticate, contactsController.listContacts);
