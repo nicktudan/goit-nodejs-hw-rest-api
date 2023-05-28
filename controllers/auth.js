@@ -67,12 +67,21 @@ const logout = async (req, res) => {
   const { _id } = req.user;
   await User.findByIdAndUpdate(_id, { token: "" });
 
-  res.json({message: "Logout success"});
+  res.status(204).json({ message: "Logout success" });
 }
+
+const updateSubscription = async (req, res) => {
+  const { _id } = req.user;
+  const result = await User.findByIdAndUpdate(_id, req.body, {
+    new: true,
+  });
+  res.json(result);
+};
 
 module.exports = {
   register: tryCatchWrapper(register),
   login: tryCatchWrapper(login),
   getCurrent: tryCatchWrapper(getCurrent),
   logout: tryCatchWrapper(logout),
+  updateSubscription: tryCatchWrapper(updateSubscription),
 };

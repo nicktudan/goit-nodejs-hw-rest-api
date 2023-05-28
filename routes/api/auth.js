@@ -22,5 +22,12 @@ router.get("/current", authenticate, userController.getCurrent);
 
 router.post("/logout", authenticate, userController.logout);
 
+router.patch(
+  "/subscription",
+  authenticate,
+  validateBody(userSchemas.updateSubscriptionSchema),
+  userController.updateSubscription
+);
+
 
 module.exports = router;
