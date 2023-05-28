@@ -5,12 +5,16 @@ const { tryCatchWrapper } = require("../decorators");
 const listContacts = async (req, res) => {
   const { _id: owner } = req.user;
   // console.log(req.query);
-  const { page = 1, limit = 20 } = req.query;
+  const { page = 1, limit = 20, ...query } = req.query;
   const skip = (page - 1) * limit;
-  const result = await Contact.find({ owner }, "-createAt -updateAt", {
-    skip,
-    limit,
-  }).populate("owner", "email subscription");
+  const result = await Contact.find(
+    { owner, ...query },
+    "-createAt -updateAt",
+    {
+      skip,
+      limit,
+    }
+  ).populate("owner", "email subscription");
   res.json(result);
 };
 
