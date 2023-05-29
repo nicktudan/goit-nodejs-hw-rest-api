@@ -1,31 +1,43 @@
 const express = require("express");
 
-const contactsController = require("../../controllers/contacts");
+const {contactsController} = require("../../controllers");
 const schema = require("../../schemas/schema");
-const { validateBody, isValidId } = require("../../decorators");
+const { validateBody, isValidId, authenticate } = require("../../decorators");
 
 const router = express.Router();
 
-router.get("/", contactsController.listContacts);
+// ALTERNATIVE - We can use this middleware when it needs to be added to each request 
+// router.use(authenticate);
 
-router.get("/:contactId", isValidId, contactsController.getContactById);
+router.get("/", authenticate, contactsController.listContacts);
+
+router.get("/:contactId", authenticate, isValidId, contactsController.getContactById);
 
 router.post(
   "/",
+  authenticate,
   validateBody(schema.contactAddSchema),
   contactsController.addContact
 );
 
-router.delete("/:contactId", isValidId, contactsController.removeContact);
+router.delete(
+  "/:contactId",
+  authenticate,
+  isValidId,
+  contactsController.removeContact
+);
 
 router.put(
-  "/:contactId", isValidId,
+  "/:contactId",
+  authenticate,
+  isValidId,
   validateBody(schema.contactAddSchema),
   contactsController.updateContact
 );
 
 router.patch(
   "/:contactId/favorite",
+  authenticate,
   isValidId,
   validateBody(schema.updateFavoriteSchema),
   contactsController.updateStatusContact
