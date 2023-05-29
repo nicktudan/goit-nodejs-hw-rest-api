@@ -29,5 +29,4 @@ router.patch(
   userController.updateSubscription
 );
 
-
 module.exports = router;
