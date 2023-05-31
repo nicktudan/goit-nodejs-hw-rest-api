@@ -2,8 +2,8 @@ const express = require("express");
 
 const { userController } = require('../../controllers');
 const { userSchemas } = require("../../models");
-const { validateBody, authenticate } = require("../../decorators");
-const { upload } = require("../../middlewares");
+const { validateBody } = require("../../decorators");
+const { authenticate, upload } = require("../../middlewares");
 
 const router = express.Router();
 
