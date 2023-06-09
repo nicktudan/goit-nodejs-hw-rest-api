@@ -47,6 +47,44 @@ const register = async (req, res) => {
   });
 }
 
+const verify = async (req, res) => {
+  const { verificationToken } = req.params;
+  const user = await User.findOne({ verificationToken });
+  if (!user) {
+    throw HttpErr(404, "User not found");
+  }
+  await User.findByIdAndUpdate(user._id, { verify: true, verificationToken: "" });
+
+  res.json({
+    message: "Verification successful"
+  });
+}
+
+const resendVerifyEmail = async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+  if (!email) {
+    throw HttpErr(400, "Missing required field email");
+  }
+  if (!user) {
+    throw HttpErr(404, "User not found");
+  }
+  if (user.verify) {
+    throw HttpErr(400, "Verification has already been passed");
+  }
+
+  const verifyEmail = {
+    to: email,
+    subject: "Verify email",
+    html: `<a target="_blank" href="${PROJECT_URL}/api/auth/verify/${user.verificationToken}">Click on verify email</a>`,
+  };
+  await sendEmail(verifyEmail);
+
+  res.json({
+    message: "Verification email sent",
+  });
+}
+
 const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
@@ -122,6 +160,8 @@ const updateAvatar = async (req, res) => {
 
 module.exports = {
   register: tryCatchWrapper(register),
+  verify: tryCatchWrapper(verify),
+  resendVerifyEmail: tryCatchWrapper(resendVerifyEmail),
   login: tryCatchWrapper(login),
   getCurrent: tryCatchWrapper(getCurrent),
   logout: tryCatchWrapper(logout),
